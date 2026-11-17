@@ -1,3 +1,4 @@
+-- Active: 1791043881066@@127.0.0.1@3306@db_academia
 -- Clientes
 SELECT * 
 FROM tb_cliente;
@@ -57,6 +58,57 @@ SELECT nomeC AS 'CLIENTE'
 FROM tb_cliente
 WHERE email IS NOT NULL
 AND foneC IS NOT NULL;
+
+-- Clientes com duas ou mais matrículas
+
+-- Lista Clientes sem avaliação física
+SELECT tb_cliente.nomeC AS 'CLIENTES'
+FROM tb_cliente LEFT JOIN tb_avaliacao_fisica
+ON tb_cliente.id_cliente = tb_avaliacao_fisica.id_cliente
+WHERE tb_avaliacao_fisica.id_avali_fisic IS NULL
+ORDER BY nomeC ASC;
+
+-- Lista nome, data de vencimento e nome do plano de clientes que não pagaram ainda
+SELECT tb_matricula.id_matricula AS 'ID MATRICULA', tb_cliente.nomeC AS 'CLIENTE',tb_pagamento.data_vencimento AS 'VENCIMENTO' ,  tb_plano.nomeP AS "PLANO"
+FROM tb_cliente INNER JOIN tb_matricula
+ON tb_cliente.id_cliente = tb_matricula.id_cliente
+INNER JOIN tb_pagamento
+ON tb_matricula.id_matricula = tb_pagamento.id_matricula
+INNER JOIN tb_plano
+ON tb_matricula.id_plano = tb_plano.id_plano
+WHERE tb_pagamento.data_pagamento IS NULL
+ORDER BY tb_cliente.nomeC ASC;
+
+-- Lista nome de clientes com plano atrasados
+SELECT  tb_cliente.nomeC AS 'CLIENTE'''
+FROM tb_cliente INNER JOIN tb_matricula
+ON tb_cliente.id_cliente = tb_matricula.id_cliente
+INNER JOIN tb_pagamento
+ON tb_matricula.id_matricula = tb_pagamento.id_matricula
+WHERE tb_pagamento.data_vencimento <= CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+AND tb_pagamento.data_pagamento IS NULL
+ORDER BY tb_cliente.nomeC ASC;
+
+-- Lista nome de clientes com plano proximo ao vencimento
+SELECT  tb_cliente.nomeC AS 'CLIENTE'
+FROM tb_cliente INNER JOIN tb_matricula
+ON tb_cliente.id_cliente = tb_matricula.id_cliente
+INNER JOIN tb_pagamento
+ON tb_matricula.id_matricula = tb_pagamento.id_matricula
+WHERE tb_pagamento.data_vencimento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+AND tb_pagamento.data_pagamento IS NULL
+ORDER BY tb_cliente.nomeC ASC;
+
+
+-- Lista a quantiadade de matriculas que está proximo para vencer
+SELECT COUNT(*) AS 'TOTAL DE MATRICULAS'
+FROM tb_matricula
+WHERE data_fim BETWEEN CURDATE()
+AND DATE_ADD(CURDATE(), INTERVAL 30 DAY);
+
+
+
+
 
 -- Lista  o total de clientes
 SELECT count(*) AS 'TOTAL DE CLIENTES'
