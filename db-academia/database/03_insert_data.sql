@@ -67,7 +67,6 @@ INSERT INTO tb_funcionario (nomeF, cpfF, foneF, cargo, data_admissao, salario) V
 ('Simone Carvalho Leal', '309.100.009-09', '(61) 9929-3009', 'Atendente', '2026-01-12', 2600.0),
 ('André Luiz Moreira', '310.100.010-10', '(61) 9900-3010', 'Instrutor', '2026-02-09', 3150.0);
 
-drop Table tb_instrutor, tb_turma,tb_avaliacao_fisica,tb_venda,tb_item_produto,tb_funcionario 
 
 -- INSTRUTORES
 INSERT INTO tb_instrutor (id_funcionario, creF) VALUES
